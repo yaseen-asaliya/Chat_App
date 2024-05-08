@@ -1,7 +1,8 @@
 import json
 
 from channels.generic.websocket import WebsocketConsumer
-
+from channels.db import database_sync_to_async
+from chat.models import Room, Message
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -17,3 +18,9 @@ class ChatConsumer(WebsocketConsumer):
         print("Recive..........")
         self.send(text_data=json.dumps({"message": "Message received successfully!!!!!"}))
 
+    @database_sync_to_async
+    def save_message(self, room_name):
+        Room.objects.create(
+            name=room_name
+        )
+    
